@@ -3,11 +3,28 @@ import logoImage from '../assets/logo.svg'
 import { Plus, X } from 'phosphor-react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { NewHabitForm } from './NewHabitForm'
+import { Button } from '@mui/material'
+import { useContext } from 'react'
+import { AuthContext } from '../auth/AuthContext'
 
 export function Header() {
+
+  const auth = useContext(AuthContext)
+
+  const Logout = async () => {
+    if (confirm("Você deseja sair da sua conta?")) {
+      await auth.signout()
+    }
+  }
+
   return (
       <div className='w-full max-w-3xl mx-auto flex items-center justify-between'>
         <img src={logoImage} alt="logo" />
+
+          <button
+            className='border border-violet-500 font-semibold rounded-lg px-6 py-4 flex items-center gap-3 hover:border-red-800 transition-colors focus:outline-none'
+            onClick={Logout}
+          >sair</button>
 
           <Dialog.Root>
             <Dialog.Trigger

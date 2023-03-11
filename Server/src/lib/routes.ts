@@ -5,6 +5,7 @@ import { prisma } from "./prisma"
 
 export async function appRoutes(app: FastifyInstance) {
 
+    //App Routes
     app.post('/habits', async (request) => {
         const createHabitBody = z.object({
             title: z.string(),
@@ -150,6 +151,62 @@ export async function appRoutes(app: FastifyInstance) {
         `
 
         return summary
+    })
+
+    //Authentication Routes
+    app.post('/register', async (request) => {
+        const registerUser = z.object({
+            email: z.string(),
+            password: z.string()
+        })
+
+        const { email, password } = registerUser.parse(request.body)
+
+        const today = dayjs().startOf('day').toDate()
+
+        await prisma.user.create({
+            data: {
+                email,
+                password,
+                created_at: today,
+            }
+        })
+    })
+    
+    app.get('/login', async (request) => {
+        const getUserParams = z.object({
+            email: z.string(),
+            password: z.string()
+        })
+
+        const { email, password } = getUserParams.parse(request.query)
+
+        const user = await prisma.user.findFirst({
+            where: {
+                email: email,
+                password: password
+            }
+        })
+
+        const token = user?.id //teste
+
+        return {user, token}
+    })
+    
+    app.get('/validateToken', async (request) => {
+        const getUserParams = z.object({
+            id: z.string()
+        })
+
+        const { id } = getUserParams.parse(request.query)
+
+        const user = await prisma.user.findFirst({
+            where: {
+                id: id
+            }
+        })
+        
+        return user
     })
 
 }

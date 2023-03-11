@@ -54,3 +54,15 @@ model DayHabit {
   @@unique([day_id, habit_id])
   @@map("day_habits")
 }
+
+//Authentication
+
+model User {
+  id String @id @default(uuid())
+
+  email      String
+  password   String
+  created_at DateTime
+
+  @@map("users")
+}
